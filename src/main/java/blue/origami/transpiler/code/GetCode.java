@@ -9,9 +9,11 @@ import blue.origami.transpiler.type.DataTy;
 import blue.origami.transpiler.type.FlowDataTy;
 import blue.origami.transpiler.type.Ty;
 import blue.origami.transpiler.type.TypeMatcher;
+import blue.origami.common.ODebug;
 
 public class GetCode extends Code1 {
 	final String name;
+	private String cnt = "";
 
 	public GetCode(Code recv, AST nameTree) {
 		super(recv);
@@ -25,7 +27,7 @@ public class GetCode extends Code1 {
 	}
 
 	public String getName() {
-		return this.name;
+		return this.name + this.cnt;
 	}
 
 	@Override
@@ -39,7 +41,10 @@ public class GetCode extends Code1 {
 			}
 			if (recvTy.isData()) {
 				DataTy dt = (DataTy) recvTy.base();
-				this.setType(dt.fieldTy(env, this.getSource(), this.name));
+				if (this.cnt.isEmpty()) {
+					this.cnt = dt.getCnt();
+				}
+				this.setType(dt.fieldTy(env, this.getSource(), this.getName()));
 				return this.castType(env, ret);
 			}
 			throw new ErrorCode(this.getSource(), TFmt.unsupported_error);
@@ -54,14 +59,14 @@ public class GetCode extends Code1 {
 
 	@Override
 	public void strOut(StringBuilder sb) {
-		this.sexpr(sb, "get-" + this.name, this.inner);
+		this.sexpr(sb, "get-" + this.getName(), this.inner);
 	}
 
 	@Override
 	public void dumpCode(SyntaxBuilder sh) {
 		sh.Expr(this.getInner());
 		sh.Token(".");
-		sh.Name(this.name);
+		sh.Name(this.getName());
 	}
 
 }

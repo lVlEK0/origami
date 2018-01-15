@@ -203,7 +203,14 @@ public class AsmSection extends AsmBuilder implements CodeSection {
 		case "INVOKESTATIC":
 			// this.mw.visitMethodInsn(INVOKESTATIC, "java/lang/Math", "sqrt",
 			// "(D)D", false);
-			desc = this.ts.desc(cmap.getReturnType(), cmap.getParamTypes());
+			Ty[] ty = cmap.getParamTypes();
+			for(int i = 0; i < ty.length; i++) {
+				if (ty[i] instanceof DataTy) {
+					DataTy tempTy = (DataTy)ty[i];
+					ty[i] = new DataTy(tempTy.isMutable(), DataTy.deleteCnts(tempTy.names()));
+				}
+			}
+			desc = this.ts.desc(cmap.getReturnType(), ty);
 			// ODebug.trace("INVOKESTATIC %s,%s,%s", def[1], def[2], desc);
 			// ODebug.trace("template %s", tp);
 			this.mBuilder.visitMethodInsn(INVOKESTATIC, def[1], def[2], desc, false);

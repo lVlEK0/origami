@@ -125,10 +125,10 @@ Subtlabel_dump(subtlabel) =
   if subtlabel == "" then "" else "$" ++ subtlabel ++ "="
 
 Subttree_dump(tree) =
-  if tree == $|null| then "" else Tree_dump(tree)
+  if |tree| == 0 then "" else Tree_dump(tree)
 
 Subtnext_dump(subtnext) =
-  if subtnext == $|null| then "" else Subtree_dump(subtnext)
+  if |subtnext| == 0 then "" else Subtree_dump(subtnext)
 
 Subtree_dump(subtrees) =
   Subtlabel_dump(subtrees.subtlabel) ++ Subttree_dump(subtrees.subttree) ++ Subtnext_dump(subtrees.subtnext)
@@ -140,17 +140,19 @@ Tree_dump(tree) =
 
 def newAST = '''
 newAST(tag, inputs, pos, epos, subtrees) =
-  {tkey: tag, tvalue: if subtrees == $|null| then inputs[pos .. epos].map(\a a) else [], tsubs: subtrees}
+  {tkey: tag, tvalue: if |subtrees| == 0 then inputs[pos.. epos].map(\a a) else [], tsubs: subtrees}
 
 '''
 
 def subAST = '''
 subAST(tree, n, tag, subttree) = tree
+
 '''
 
 main = '''
 readInputs(path: String) =
-  loadFile(path)
+  file = loadFile(path)
+  if file == "" then path else file
 
 main2(input: String) =
   inputs = readInputs(input)
@@ -162,7 +164,7 @@ main2(input: String) =
   println("")
 
 main(av: String[]) =
-  if |av| == 1 then println("Usage: " ++ av[0] ++ "file [or 'input-text']\n") else av[1 .. |av|].map(\a -> main2(a))
+  if |av| == 1 then println("Usage: " ++ av[0] ++ "file [or 'input-text']\n") else av[1.. |av|].map(\a -> main2(a))
 '''
 
 man = '''

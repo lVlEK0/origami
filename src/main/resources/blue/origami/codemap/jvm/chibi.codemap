@@ -243,3 +243,8 @@ Some:: Int->Option[Int]                        => S|blue/origami/asm/APIs|box
 <---:: Option[Int]->Int                        => S|blue/origami/asm/APIs|unwrapI
 Some:: Float->Option[Float]                    => S|blue/origami/asm/APIs|box
 <---:: Option[Float]->Float                    => S|blue/origami/asm/APIs|unwrapD
+
+// NezCC
+loadFile:: String->String                      => S|blue/origami/chibi/NezCC|loadFile
+time:: Float->Float                            => S|blue/origami/chibi/NezCC|time
+difTime:: Float->Float                         => S|blue/origami/chibi/NezCC|difTime

@@ -365,12 +365,17 @@ public class AsmType extends TypeMapper<Class<?>> implements Opcodes {
 
 	Class<?> loadDataClass(DataTy dataTy) {
 		String[] names = dataTy.names();
+		if (names.length == 0) {
+			return blue.origami.chibi.Data$.class;
+		}
 		String cname1 = "Data$" + OStrings.joins(names, "");
 		return this.reg(cname1, () -> {
 			Class<?> c = this.toClass(dataTy);
+			DataTy superTy = new DataTy(dataTy.isMutable(), DataTy.deleteCnts(dataTy.names()));
+			Class<?> sc = this.toClass(superTy);
 			ClassWriter cw1 = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
 			cw1.visit(V1_8, ACC_PUBLIC, cname1, null/* signatrue */, Type.getInternalName(Data$.class),
-					new String[] { Type.getInternalName(c) });
+					new String[] { Type.getInternalName(c), Type.getInternalName(sc)});
 			addDefaultConstructor(cw1, Data$.class);
 			for (String name : names) {
 				Ty ty = this.fieldTy(name);
@@ -383,7 +388,20 @@ public class AsmType extends TypeMapper<Class<?>> implements Opcodes {
 				mw.getField(Type.getType("L" + cname1 + ";"), name, type);
 				mw.returnValue();
 				mw.endMethod();
+				getm = new Method(DataTy.deleteCnt(name), type, this.ts(OArrays.emptyTypes));
+				mw = new GeneratorAdapter(ACC_PUBLIC + ACC_FINAL, getm, null, null, cw1);
+				mw.loadThis();
+				mw.getField(Type.getType("L" + cname1 + ";"), name, type);
+				mw.returnValue();
+				mw.endMethod();
 				Method setm = new Method(name, Type.VOID_TYPE, new Type[] { type });
+				mw = new GeneratorAdapter(ACC_PUBLIC + ACC_FINAL, setm, null, null, cw1);
+				mw.loadThis();
+				mw.loadArg(0);
+				mw.putField(Type.getType("L" + cname1 + ";"), name, type);
+				mw.returnValue();
+				mw.endMethod();
+				setm = new Method(DataTy.deleteCnt(name), Type.VOID_TYPE, new Type[] { type });
 				mw = new GeneratorAdapter(ACC_PUBLIC + ACC_FINAL, setm, null, null, cw1);
 				mw.loadThis();
 				mw.loadArg(0);

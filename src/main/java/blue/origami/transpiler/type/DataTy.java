@@ -17,6 +17,7 @@ import blue.origami.transpiler.code.ErrorCode;
 
 public class DataTy extends Ty {
 	boolean isMutable = false;
+	private String cnt = "";
 
 	@Override
 	public boolean isMutable() {
@@ -33,21 +34,48 @@ public class DataTy extends Ty {
 
 	TreeSet<String> fields;
 
-	DataTy() {
+	public DataTy() {
 		this.isMutable = true;
 		this.fields = new TreeSet<>();
 	}
 
-	DataTy(boolean isMutable, String... names) {
-		this();
+	public DataTy(boolean isMutable) {
 		this.isMutable = isMutable;
+		this.fields = new TreeSet<>();
+	}
+
+	public DataTy(boolean isMutable, String... names) {
+		this(isMutable);
+		if (names.length != 0) {
+			String first = names[0];
+			int index = first.lastIndexOf('_');
+			if (index > 0) {
+				this.cnt = first.substring(index);
+			}
+		}
+
 		for (String n : names) {
 			this.fields.add(n);
 		}
 	}
 
+	public DataTy(boolean isMutable, int id, String... names) {
+		this(isMutable);
+		this.cnt = makeCnt(id);
+
+		if (names.length != 0 && this.hasCnt(names[0])) {
+			for (String n : names) {
+				this.fields.add(n);
+			}
+		}else{
+			for (String n : names) {
+				this.fields.add(n + this.cnt);
+			}
+		}
+	}
+
 	public String[] names() {
-		if (this.fields == null) {
+		if (this.fields == null || this.fields.size() == 0) {
 			return OArrays.emptyNames;
 		}
 		return this.fields.toArray(new String[this.fields.size()]);
@@ -65,15 +93,25 @@ public class DataTy extends Ty {
 		return this.fields.size();
 	}
 
+	public String getCnt() {
+		return this.cnt;
+	}
+
 	public final boolean hasField(String field) {
 		return this.hasField(field, TypeMatcher.Update);
 	}
 
 	public boolean hasField(String field, TypeMatcher logs) {
+		if (!(this.hasCnt(field)) && this.cnt.length() > 1) {
+			return this.hasField(field + this.cnt, logs);
+		}
 		return this.fields.contains(field);
 	}
 
 	public Ty fieldTy(Env env, AST s, String name) {
+		if (!(this.hasCnt(name)) && this.cnt.length() > 1) {
+			return this.fieldTy(env, s, name + this.cnt);
+		}
 		if (this.hasField(name)) {
 			NameHint hint = env.findGlobalNameHint(env, name);
 			if (hint != null) {
@@ -85,9 +123,36 @@ public class DataTy extends Ty {
 		throw new ErrorCode(s, TFmt.undefined_name__YY1_in_YY2, name, this);
 	}
 
+	private static boolean hasCnt(String name) {
+		return name.lastIndexOf('_') != -1;
+		//return true;
+	}
+
+	public static String makeCnt(int id) {
+		return "_" + String.valueOf(id) + "D";
+		//return "";
+	}
+
+	public static String deleteCnt(String name) {
+		int index = name.lastIndexOf('_');
+		if (index != -1) {
+			return name.substring(0, index);
+		}
+		return name;
+	}
+
+	public static String[] deleteCnts(String[] names) {
+		String[] deletedNames = new String[names.length];
+		for (int i = 0; i < names.length; i++) {
+			deletedNames[i] = deleteCnt(names[i]);
+		}
+		return deletedNames;
+	}
+
 	@Override
 	public void strOut(StringBuilder sb) {
 		sb.append(DataTy.this.isMutable ? "{" : "[");
+		//OStrings.joins(sb, deleteCnts(this.names()), ",");
 		OStrings.joins(sb, this.names(), ",");
 		sb.append(DataTy.this.isMutable ? "}" : "]");
 	}

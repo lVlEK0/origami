@@ -5,6 +5,8 @@ import java.lang.reflect.Field;
 import blue.origami.common.OConsole;
 import blue.origami.common.OStrings;
 
+import blue.origami.transpiler.type.DataTy;
+
 public class Data$ implements OStrings, Cloneable {
 
 	@Override
@@ -35,7 +37,7 @@ public class Data$ implements OStrings, Cloneable {
 			if (cnt > 0) {
 				sb.append(", ");
 			}
-			String name = f.getName();
+			String name = DataTy.deleteCnt(f.getName());
 			sb.append(name);
 			sb.append(": ");
 			OStrings.appendQuoted(sb, this.getf(f, this));

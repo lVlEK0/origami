@@ -88,8 +88,9 @@ public class Language implements OFactory<Language> {
 		env.add("DataDictExpr", new DictExpr(true));
 		env.add("RecordExpr", new DataExpr(false));
 
-		env.add("RecordType", new DataType(false));
-		env.add("DataType", new DataType(true));
+		// env.add("RecordType", new DataType(false));
+		env.add("DataType", new DataType(false));
+		env.add("MDataType", new DataType(true));
 
 		// type
 		// env.add("?", Ty.tUntyped0);
@@ -379,6 +380,11 @@ public class Language implements OFactory<Language> {
 				ODebug.trace("MUTATION %s", ty);
 				ty.foundMutation();
 			}
+			Ty[] types = new Ty[code.args.length];
+			for (int i = 0; i < code.args.length; i++) {
+				types[i] = code.args[i].getType();
+			}
+			found.setParamTypes(types);
 			code.setMapped(found);
 			code.setType(dret);
 			return code.castType(env, t);
