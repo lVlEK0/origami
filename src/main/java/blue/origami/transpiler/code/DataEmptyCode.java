@@ -24,6 +24,11 @@ public class DataEmptyCode extends DataCode {
     }else if (!(ret.isData())) {
       throw new ErrorCode(this, TFmt.type_error_YY1_YY2, ret, "Data");
     }
+    /* DataTy dt = Ty.tData(env.getTranspiler().getCnt(), ((DataTy)ret).names());
+    this.setType(dt);
+    for (String name: dt.names()) {
+      env.addGlobalName(env, name, Ty.tVoid);
+    } */
     this.setType(new DataTy());
     return super.castType(env, ret);
 	}

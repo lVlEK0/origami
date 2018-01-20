@@ -221,21 +221,19 @@ private func inputs(_ input:String) -> String {
   return input + "\0"
 }
 
-var arguments :Array<String> = Array(CommandLine.arguments)
-var arr:Array<Double> = []
+let arguments :Array<String> = Array(CommandLine.arguments)
+var times:Array<Double> = []
 for i in 1..<arguments.count {
-  let inputS :String = inputs(arguments[i])
-  let inputByte = Array<UInt8>(inputS.utf8)
+  let inputByte = Array<UInt8>(inputs(arguments[i]).utf8)
   let start = Date()
   let object = parse(inputByte, inputByte.count - 1, newAST, subAST)
   let finish = Date()
-  let time = Double(finish.timeIntervalSince(start)) * 1000
-  arr += [time]
-  //print(object.print(inputByte))
+  times.append(Double(finish.timeIntervalSince(start)) * 1000)
+  print(object.print(inputByte))
 }
 
-for t in 0..<arr.count {
-    print("\(arguments[t+1]): \(arr[t])[ms]")
+for t in 0..<times.count {
+    print("\(arguments[t+1]): \(times[t])[ms]")
 }
 '''
 

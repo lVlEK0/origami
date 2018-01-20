@@ -231,7 +231,7 @@ Some:: a->Option[a]                            => -
 <---:: Option[a]->a                            => S|blue/origami/asm/APIs|unwrap
 
 Some?:: Option[a]->Bool                        => S|blue/origami/asm/APIs|isSome
-None?:: Option[a]->Bool                        => S|blue/origami/asm/APIs|isNone
+// None?:: Option[a]->Bool                        => S|blue/origami/asm/APIs|isNone
 |?:: (Option[a],a)->a                          => X|orElse
 forEach:: (Option[a],a->())->()                => S|blue/origami/asm/APIs|forEach
 map:: (Option[a],a->b)->Option[b]              => S|blue/origami/asm/APIs|map

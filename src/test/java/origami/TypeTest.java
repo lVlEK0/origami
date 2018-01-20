@@ -1,6 +1,6 @@
 /***********************************************************************
  * Copyright 2017 Kimio Kuramitsu and ORIGAMI project
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -115,8 +115,8 @@ public class TypeTest extends CommandTest {
 	}
 
 	public void testData() throws Throwable {
-		runScript("f(p) = p.x; f", "[x]->Float");
-		runScript("f(p) = p.x + p.y; f", "[x,y]->Float");
+		runScript("f(p) = p.x; f", "{x}->Float");
+		runScript("f(p) = p.x + p.y; f", "{x,y}->Float");
 	}
 
 	public void testMutation() throws Throwable {

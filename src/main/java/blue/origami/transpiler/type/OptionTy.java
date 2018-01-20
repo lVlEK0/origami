@@ -10,6 +10,11 @@ public class OptionTy extends SimpleTy {
 	}
 
 	@Override
+	public Ty newGeneric(Ty m) {
+		return new GenericTy(this, m);
+	}
+
+	@Override
 	public int costMapThisTo(Env env, Ty fromTy, Ty toTy) {
 		if (toTy.isGeneric(Ty.tOption)) {
 			if (fromTy.getParamType() == Ty.tAnyRef || toTy.getParamType() == Ty.tAnyRef) {
@@ -21,10 +26,13 @@ public class OptionTy extends SimpleTy {
 
 	@Override
 	public CodeMap findMapThisTo(Env env, Ty fromTy, Ty toTy) {
+		Ty paramTy = fromTy.getParamType();
 		if (toTy.isGeneric(Ty.tOption)) {
-			if (fromTy.getParamType() == Ty.tAnyRef || toTy.getParamType() == Ty.tAnyRef) {
+			if (paramTy == Ty.tAnyRef || toTy.getParamType() == Ty.tAnyRef) {
 				return new CodeMap(CodeMap.BESTCAST, "anycast", "%s", this, toTy);
 			}
+		} else if (paramTy.equals(toTy)) {
+			return new CodeMap("unwrap", "%s", toTy, fromTy);
 		}
 		return null;
 	}

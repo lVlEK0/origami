@@ -343,11 +343,11 @@ public class APIs {
 	}
 
 	public final static boolean isSome(Object o) {
-		return !(o instanceof RuntimeException);
+		return !(o instanceof RuntimeException || o == null);
 	}
 
 	public final static boolean isNone(Object o) {
-		return o instanceof RuntimeException;
+		return o instanceof RuntimeException || o == null;
 	}
 
 	public final static Object unwrap(Object o) {

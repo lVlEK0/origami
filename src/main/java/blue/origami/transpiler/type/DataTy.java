@@ -35,7 +35,7 @@ public class DataTy extends Ty {
 	TreeSet<String> fields;
 
 	public DataTy() {
-		this.isMutable = true;
+		this.isMutable = false;
 		this.fields = new TreeSet<>();
 	}
 
@@ -69,6 +69,9 @@ public class DataTy extends Ty {
 			}
 		}else{
 			for (String n : names) {
+				if (n.isEmpty()) {
+					continue;
+				}
 				this.fields.add(n + this.cnt);
 			}
 		}
@@ -151,10 +154,12 @@ public class DataTy extends Ty {
 
 	@Override
 	public void strOut(StringBuilder sb) {
-		sb.append(DataTy.this.isMutable ? "{" : "[");
-		//OStrings.joins(sb, deleteCnts(this.names()), ",");
+		if (DataTy.this.isMutable) {
+			sb.append(Ty.Mut);
+		}
+		sb.append("{");
 		OStrings.joins(sb, this.names(), ",");
-		sb.append(DataTy.this.isMutable ? "}" : "]");
+		sb.append("}");
 	}
 
 	@Override

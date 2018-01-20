@@ -15,8 +15,8 @@ import blue.origami.transpiler.CodeSection;
 import blue.origami.transpiler.Env;
 import blue.origami.transpiler.TFmt;
 import blue.origami.transpiler.type.DataTy;
+import blue.origami.transpiler.type.GenericTy;
 import blue.origami.transpiler.type.Ty;
-import blue.origami.transpiler.code.DataEmptyCode;
 
 public interface Code extends CodeAPI, Iterable<Code>, OStrings {
 	@Override
@@ -126,21 +126,39 @@ interface CodeAPI {
 		// ODebug.trace("casting %s => %s", self.getType(), ret0);
 		if (ret.match(self)) {
 			return self;
-		}else if (self instanceof DataEmptyCode) {
+		} else if (self instanceof DataEmptyCode) {
 			return self;
-		}else if (self instanceof DataCode) {
+		} else if (self instanceof DataCode) {
 			return ((DataCode)self).cast(env, ret);
 		}
-		Ty f = self.getType();
-		CodeMap tp = env.findArrow(env, f, ret);
+		Ty f = self.getType().base();
+		Ty retTy;
+		if (f instanceof GenericTy) {
+			Ty paramTy = ((GenericTy)f).getParamType();
+			if (paramTy instanceof DataTy && ret instanceof DataTy) {
+				DataTy dt = (DataTy)ret;
+				String[] newNames = new String[dt.size()];
+				String[] oldNames = dt.names();
+				String cnt = ((DataTy)paramTy).getCnt();
+				for (int i = 0; i < dt.size(); i++) {
+					newNames[i] = oldNames[i] +  cnt;
+				}
+				retTy = Ty.tData(dt.isMutable(), newNames);
+			} else {
+				retTy = ret;
+			}
+		} else {
+			retTy = ret;
+		}
+		CodeMap tp = env.findArrow(env, f, retTy);
 		// ODebug.trace("found map %s", tp);
 		if (tp == CodeMap.StupidArrow) {
 			ODebug.log(() -> {
-				ODebug.stackTrace("TYPE ERROR %s => %s", f, ret);
+				ODebug.stackTrace("TYPE ERROR %s => %s", f, retTy);
 			});
-			throw new ErrorCode(self, TFmt.type_error_YY1_YY2, f.memoed(), ret.memoed());
+			throw new ErrorCode(self, TFmt.type_error_YY1_YY2, f.memoed(), retTy.memoed());
 		}
-		return new CastCode(ret, tp, self);
+		return new CastCode(retTy, tp, self);
 	}
 
 	public default Code bindAs(Env env, Ty ret) {
