@@ -51,6 +51,11 @@ public class List$Int implements OStrings, FuncIntInt {
 		return len;
 	}
 
+	public List$Int getl(int left, int right) {
+		this.flatten();
+ 		return new List$Int(this.arrays, this.start + left, this.start + right);
+	}
+
 	public List$Int connect(List$Int last) {
 		List$Int p = this;
 		while (p.next != null) {

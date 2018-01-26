@@ -32,7 +32,7 @@ public class OptionTy extends SimpleTy {
 				return new CodeMap(CodeMap.BESTCAST, "anycast", "%s", this, toTy);
 			}
 		} else if (paramTy.equals(toTy)) {
-			return new CodeMap("unwrap", "%s", toTy, fromTy);
+			return new CodeMap(CodeMap.BADCONV, "unwrap", "%s", toTy, fromTy);
 		}
 		return null;
 	}

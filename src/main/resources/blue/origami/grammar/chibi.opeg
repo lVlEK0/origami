@@ -770,6 +770,7 @@ PostExpr =
 POSTOP =
 	"." $name(Identifier) ( ARGU #MethodExpr / #GetExpr )
 	/ ARGU #ApplyExpr
+  / "[" $left(Expression) '..' _ $right(Expression) "]" #SliceExpr
 	/ "[" $param(Arguments) "]" #IndexExpr
 	/ TO $type(Type) ('!!' _ #UnsafeCastExpr / #CastExpr )
 

@@ -122,11 +122,11 @@ public abstract class Ty implements TypeApi, OStrings {
 	}
 
 	public static final DataTy tData(String... names) {
-		return (DataTy) m(new DataTy(false, names));
+		return (DataTy) m(new DataTy(true, names));
 	}
 
 	public static final DataTy tData(int id, String... names) {
-		return (DataTy) m(new DataTy(false, id, names));
+		return (DataTy) m(new DataTy(true, id, names));
 	}
 
 	public static final DataTy tData(boolean isMutable) {

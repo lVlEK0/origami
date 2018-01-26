@@ -16,7 +16,7 @@ import blue.origami.transpiler.code.DataCode;
 import blue.origami.transpiler.code.ErrorCode;
 
 public class DataTy extends Ty {
-	boolean isMutable = false;
+	boolean isMutable = true;
 	private String cnt = "";
 
 	@Override
@@ -27,7 +27,7 @@ public class DataTy extends Ty {
 	@Override
 	public Ty toImmutable() {
 		if (this.isMutable()) {
-			return Ty.tRecord(this.names());
+			return Ty.tRecord(this.getId(), this.names());
 		}
 		return this;
 	}
@@ -35,7 +35,7 @@ public class DataTy extends Ty {
 	TreeSet<String> fields;
 
 	public DataTy() {
-		this.isMutable = false;
+		this.isMutable = true;
 		this.fields = new TreeSet<>();
 	}
 
@@ -46,22 +46,15 @@ public class DataTy extends Ty {
 
 	public DataTy(boolean isMutable, String... names) {
 		this(isMutable);
-		if (names.length != 0) {
-			String first = names[0];
-			int index = first.lastIndexOf('_');
-			if (index > 0) {
-				this.cnt = first.substring(index);
-			}
-		}
-
 		for (String n : names) {
 			this.fields.add(n);
 		}
+		this.getCnt();
 	}
 
 	public DataTy(boolean isMutable, int id, String... names) {
 		this(isMutable);
-		this.cnt = makeCnt(id);
+		this.cnt = id == -1 ? "" : makeCnt(id);
 
 		if (names.length != 0 && this.hasCnt(names[0])) {
 			for (String n : names) {
@@ -97,7 +90,25 @@ public class DataTy extends Ty {
 	}
 
 	public String getCnt() {
-		return this.cnt;
+		if (this.cnt.length() > 2) {
+			return this.cnt;
+		} else if (this.size() > 0){
+			String first = this.fields.first();
+			int index = first.lastIndexOf('_');
+			if (index > 0) {
+				this.cnt = first.substring(index);
+				return this.cnt;
+			}
+		}
+		return "";
+	}
+
+	public int getId() {
+		String c = this.getCnt();
+		if (c.length() > 2) {
+			return Integer.parseInt(c.substring(1, c.length() - 1));
+		}
+		return -1;
 	}
 
 	public final boolean hasField(String field) {
@@ -105,21 +116,28 @@ public class DataTy extends Ty {
 	}
 
 	public boolean hasField(String field, TypeMatcher logs) {
-		if (!(this.hasCnt(field)) && this.cnt.length() > 1) {
-			return this.hasField(field + this.cnt, logs);
+		if (DataTy.hasCnt(field)) {
+			return this.hasField(deleteCnt(field), logs);
 		}
-		return this.fields.contains(field);
+		return this.fields.contains(field + this.getCnt());
 	}
 
 	public Ty fieldTy(Env env, AST s, String name) {
 		if (!(this.hasCnt(name)) && this.cnt.length() > 1) {
-			return this.fieldTy(env, s, name + this.cnt);
+			return this.fieldTy(env, s, name + this.getCnt());
 		}
 		if (this.hasField(name)) {
 			NameHint hint = env.findGlobalNameHint(env, name);
 			if (hint != null) {
 				Ty ty = hint.getType();
 				return ty == Ty.tThis ? this : ty;
+			} else {
+				hint = env.findGlobalNameHint(env, this.deleteCnt(name));
+				if (hint != null) {
+					Ty ty = hint.getType();
+					env.addGlobalName(env, name, ty);
+					return ty == Ty.tThis ? this : ty;
+				}
 			}
 			throw new ErrorCode(s, TFmt.undefined_name__YY1, name);
 		}

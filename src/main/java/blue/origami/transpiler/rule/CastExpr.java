@@ -7,6 +7,7 @@ import blue.origami.transpiler.code.CastCode;
 import blue.origami.transpiler.code.Code;
 import blue.origami.transpiler.code.ErrorCode;
 import blue.origami.transpiler.type.Ty;
+import blue.origami.common.ODebug;
 
 public class CastExpr implements ParseRule, Symbols {
 
@@ -14,7 +15,7 @@ public class CastExpr implements ParseRule, Symbols {
 	public Code apply(Env env, AST t) {
 		Code expr = env.parseCode(env, t.get(_recv));
 		AST type = t.get(_type);
-		String name = type.getString();
+		String name = "";//type.getString();
 		// switch (name) {
 		// case "Mutable":
 		// new MutableCode(expr).setSource(type);

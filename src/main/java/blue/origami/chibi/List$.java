@@ -60,6 +60,11 @@ public class List$ implements OStrings, FuncIntObj {
 		return this;
 	}
 
+	public List$ getl(int left, int right) {
+		this.flatten();
+		return new List$(this.arrays, this.start + left, this.start + right);
+	}
+
 	private void flatten() {
 		if (this.next != null) {
 			Object[] buf = new Object[this.size()];

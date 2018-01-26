@@ -88,8 +88,8 @@ public class Language implements OFactory<Language> {
 		env.add("DataDictExpr", new DictExpr(true));
 		env.add("RecordExpr", new DataExpr(false));
 
-		// env.add("RecordType", new DataType(false));
-		env.add("DataType", new DataType(false));
+		env.add("RecordType", new DataType(false));
+		env.add("DataType", new DataType(true));
 		env.add("MDataType", new DataType(true));
 
 		// type
@@ -248,6 +248,11 @@ public class Language implements OFactory<Language> {
 				return code.asUnfound(env, founds).castType(env, ret);
 			}
 			if (founds.size() == 1) {
+				/*ODebug.p("founds: %s", founds.get(0));
+				for (int i = 0; i < p.length; i++) {
+					ODebug.p("param: %s, type: %s", code.args[i], p[i]);
+				}
+				ODebug.p("ret: %s", ret);*/
 				return this.typeMatchedExpr(env, code, founds.get(0).generate(env, p), ret);
 			}
 			// code.typeArgs(env, founds);

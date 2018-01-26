@@ -205,9 +205,10 @@ public class AsmSection extends AsmBuilder implements CodeSection {
 			// "(D)D", false);
 			Ty[] ty = cmap.getParamTypes();
 			for(int i = 0; i < ty.length; i++) {
+				ty[i] = ty[i].base();
 				if (ty[i] instanceof DataTy) {
 					DataTy tempTy = (DataTy)ty[i];
-					ty[i] = new DataTy(tempTy.isMutable(), DataTy.deleteCnts(tempTy.names()));
+					ty[i] = Ty.tData(tempTy.isMutable(), DataTy.deleteCnts(tempTy.names()));
 				}
 			}
 			desc = this.ts.desc(cmap.getReturnType(), ty);

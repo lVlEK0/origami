@@ -8,7 +8,7 @@ public class FlowDataTy extends DataTy {
 		super();
 	}
 
-	private boolean hasMutation = false;
+	private boolean hasMutation = true;
 
 	@Override
 	public boolean hasMutation() {
@@ -22,11 +22,8 @@ public class FlowDataTy extends DataTy {
 
 	@Override
 	public Ty memoed() {
-		ODebug.TODO();
-		if (!this.hasMutation) {
-			return Ty.tRecord(this.names());
-		}
-		return Ty.tData(this.names());
+		//ODebug.TODO();
+		return Ty.tData(this.hasMutation, this.getId(), this.names());
 	}
 
 	@Override

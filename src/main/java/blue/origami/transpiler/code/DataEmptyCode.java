@@ -19,17 +19,7 @@ public class DataEmptyCode extends DataCode {
 
   @Override
 	public Code asType(Env env, Ty ret) {
-    if (ret.isVar()) {
-      return this.asType(env, Ty.tData(((VarTy)ret).getName()));
-    }else if (!(ret.isData())) {
-      throw new ErrorCode(this, TFmt.type_error_YY1_YY2, ret, "Data");
-    }
-    /* DataTy dt = Ty.tData(env.getTranspiler().getCnt(), ((DataTy)ret).names());
-    this.setType(dt);
-    for (String name: dt.names()) {
-      env.addGlobalName(env, name, Ty.tVoid);
-    } */
-    this.setType(new DataTy());
+    this.setType(Ty.tData());
     return super.castType(env, ret);
 	}
 }

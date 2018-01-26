@@ -19,12 +19,12 @@ public class NezCC {
   }
 
   public static final double time(double offset) {
-    double start = ((double)(System.nanoTime()) / 1000.0);
+    double start = ((double)(System.nanoTime()) / 1000000.0);
     return start - offset;
   }
 
   public static final double difTime(double start) {
-    double end = ((double)(System.nanoTime()) / 1000.0);
+    double end = ((double)(System.nanoTime()) / 1000000.0);
     return end - start;
   }
 }

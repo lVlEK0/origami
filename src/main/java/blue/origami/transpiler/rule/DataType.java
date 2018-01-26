@@ -10,10 +10,10 @@ import blue.origami.transpiler.code.TypeCode;
 import blue.origami.transpiler.type.Ty;
 
 public class DataType implements ParseRule {
-	boolean isMutable = false;
+	boolean isMutable = true;
 
 	public DataType() {
-		this(false);
+		this(true);
 	}
 
 	public DataType(boolean isMutable) {

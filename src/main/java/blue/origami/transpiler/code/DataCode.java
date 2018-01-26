@@ -14,7 +14,7 @@ import blue.origami.transpiler.type.Ty;
 
 public class DataCode extends CodeN {
 	protected String[] names;
-	boolean isMutable = false;
+	boolean isMutable = true;
 	private String cnt = "";
 
 	public DataCode(boolean isMutable, String[] names, Code[] values) {
@@ -42,6 +42,7 @@ public class DataCode extends CodeN {
 	}
 
 	public Code cast(Env env, Ty ret) {
+		ODebug.p("cast");
 		if (ret.isVar()) {
       return this.cast(env, Ty.tData(((VarTy)ret).getName()));
     }else if (!(ret.isData())) {
@@ -70,29 +71,6 @@ public class DataCode extends CodeN {
 		return this;
 	}
 
-	/*private Code addNameHint(Env env, String key, Code value) {
-		NameHint hint = env.findGlobalNameHint(env, key);
-		if (hint != null) {
-			Ty ty = hint.getType().base();
-			if (!hint.equalsName(key) && hint.isLocalOnly()) {
-				env.addGlobalName(env, key, ty);
-			} else {
-				hint.useGlobal();
-			}
-			return value.asType(env, ty);
-		} else {
-			Ty ty = Ty.tUntyped();
-			Code newValue = value.asType(env, ty);
-			Ty newTy = newValue.getType();
-			if (ty == newTy) {
-				throw new ErrorCode(value, TFmt.failed_type_inference);
-			}
-			ODebug.trace("implicit name definition %s as %s", key, newTy);
-			env.addGlobalName(env, key, newTy);
-			return newValue;
-		}
-	}*/
-
 	@Override
 	public Code asType(Env env, Ty ret) {
 		if (this.isUntyped()) {
@@ -102,9 +80,6 @@ public class DataCode extends CodeN {
 
 			this.cnt = DataTy.makeCnt(id);
 			for (int i = 0; i < this.args.length; i++) {
-				/*this.args[i] = addNameHint(env, this.names[i], this.args[i]);
-				this.names[i] = this.names[i] + this.cnt;
-				addNameHint(env, this.names[i], this.args[i]);*/
 				String key = this.names[i];
 				Code value = this.args[i];
 				this.names[i] = this.names[i] + this.cnt;

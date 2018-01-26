@@ -134,16 +134,10 @@ interface CodeAPI {
 		Ty f = self.getType().base();
 		Ty retTy;
 		if (f instanceof GenericTy) {
-			Ty paramTy = ((GenericTy)f).getParamType();
-			if (paramTy instanceof DataTy && ret instanceof DataTy) {
+			Ty fParam = ((GenericTy)f).getParamType();
+			if (fParam instanceof DataTy && ret instanceof DataTy) {
 				DataTy dt = (DataTy)ret;
-				String[] newNames = new String[dt.size()];
-				String[] oldNames = dt.names();
-				String cnt = ((DataTy)paramTy).getCnt();
-				for (int i = 0; i < dt.size(); i++) {
-					newNames[i] = oldNames[i] +  cnt;
-				}
-				retTy = Ty.tData(dt.isMutable(), newNames);
+				retTy = Ty.tData(dt.isMutable(), ((DataTy)fParam).getId(), dt.names());
 			} else {
 				retTy = ret;
 			}
