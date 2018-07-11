@@ -65,6 +65,14 @@ public class Env implements EnvAPIs, EnvApi {
 	}
 
 	@Override
+	public boolean removeBinding(String name) {
+		if (this.bindMap == null) {
+			return false;
+		}
+		return this.bindMap.remove(name) == null ? false : true;
+	}
+
+	@Override
 	public Env env() {
 		return this;
 	}
@@ -76,6 +84,8 @@ interface EnvAPIs {
 	void addBinding(String name, Binding d);
 
 	Binding getBinding(String name);
+
+	boolean removeBinding(String name);
 
 	Env getParent();
 
@@ -89,6 +99,10 @@ interface EnvAPIs {
 
 	public default void add(Class<?> cname, Object value) {
 		add(key(cname), value);
+	}
+
+	public default boolean remove(String name) {
+		return removeBinding(name);
 	}
 
 	default String key(Class<?> c) {

@@ -51,6 +51,15 @@ public class List$ implements OStrings, FuncIntObj {
 		return len;
 	}
 
+	public List$ connect(List$ last) {
+		List$ p = this;
+		while (p.next != null) {
+			p = p.next;
+		}
+		p.next = last;
+		return this;
+	}
+
 	private void flatten() {
 		if (this.next != null) {
 			Object[] buf = new Object[this.size()];
@@ -61,7 +70,7 @@ public class List$ implements OStrings, FuncIntObj {
 			}
 			this.arrays = buf;
 			this.start = 0;
-			this.end = 0;
+			this.end = offset;
 			this.next = null;
 		}
 	}
@@ -100,6 +109,10 @@ public class List$ implements OStrings, FuncIntObj {
 	@Override
 	public Object apply(int v) {
 		return this.geti(v);
+	}
+
+	public final static void p(List$ a) {
+		System.out.println(a.toString());
 	}
 
 	@Override

@@ -12,6 +12,8 @@ import blue.origami.chibi.Func.FuncIntIntInt;
 import blue.origami.chibi.Func.FuncIntObj;
 import blue.origami.chibi.Func.FuncIntVoid;
 import blue.origami.common.OStrings;
+import blue.origami.chibi.List$;
+import blue.origami.chibi.List$Char;
 
 public class List$Int implements OStrings, FuncIntInt {
 	protected int[] arrays = null;
@@ -50,6 +52,15 @@ public class List$Int implements OStrings, FuncIntInt {
 		return len;
 	}
 
+	public List$Int connect(List$Int last) {
+		List$Int p = this;
+		while (p.next != null) {
+			p = p.next;
+		}
+		p.next = last;
+		return this;
+	}
+
 	private void flatten() {
 		if (this.next != null) {
 			int[] buf = new int[this.size()];
@@ -60,7 +71,7 @@ public class List$Int implements OStrings, FuncIntInt {
 			}
 			this.arrays = buf;
 			this.start = 0;
-			this.end = 0;
+			this.end = offset;
 			this.next = null;
 		}
 	}
@@ -81,6 +92,19 @@ public class List$Int implements OStrings, FuncIntInt {
 		return;
 	}
 
+	private Character ch(char c) {
+		return c;
+	}
+
+	public List$Char toChars() {
+		this.flatten();
+		char[] chars = new char[this.end];
+		for (int i = this.start; i < this.end; i++) {
+			chars[i] = (char)this.arrays[i];
+		}
+		return new List$Char(chars, this.start, this.end, null);
+	}
+
 	public static List$Int cons(int x, List$Int xs) {
 		int[] a = { x };
 		return new List$Int(a, 0, 1, xs);
@@ -99,6 +123,10 @@ public class List$Int implements OStrings, FuncIntInt {
 	@Override
 	public int applyI(int v) {
 		return this.geti(v);
+	}
+
+	public final static void p(List$Int a) {
+		System.out.println(a.toString());
 	}
 
 	@Override

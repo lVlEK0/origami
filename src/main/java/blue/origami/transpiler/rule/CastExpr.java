@@ -14,7 +14,7 @@ public class CastExpr implements ParseRule, Symbols {
 	public Code apply(Env env, AST t) {
 		Code expr = env.parseCode(env, t.get(_recv));
 		AST type = t.get(_type);
-		String name = type.getString();
+		String name = "";//type.getString();
 		// switch (name) {
 		// case "Mutable":
 		// new MutableCode(expr).setSource(type);

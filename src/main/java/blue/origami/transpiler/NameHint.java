@@ -1,6 +1,8 @@
 package blue.origami.transpiler;
 
 import blue.origami.transpiler.type.Ty;
+import blue.origami.transpiler.type.GenericTy;
+import blue.origami.transpiler.type.VarTy;
 
 public interface NameHint {
 
@@ -29,14 +31,23 @@ public interface NameHint {
 	}
 
 	public static NameHint addNameHint(Env env, AST ns, Ty ty) {
-		String name = keyName(ns.getString());
+		return addNameHint(env, ns, keyName(ns.getString()), ty);
+	}
+
+	public static NameHint addNameHint(Env env, AST ns, String name, Ty ty) {
 		NameHint hint = env.get(name, NameHint.class);
 		if (hint == null) {
 			hint = new NameDecl(name, ty);
 			env.getTranspiler().add(name, hint);
 		} else {
-			if (!hint.getType().eq(ty)) {
-				env.reportWarning(ns, TFmt.already_defined_YY1_as_YY2, name, hint.getType());
+			Ty hty = hint.getType();
+			Ty hparam = hty.devar().getParamType();
+			Ty tparam = ty.getParamType();
+			if ((hty.devar() instanceof VarTy && !(ty.devar() instanceof VarTy)) || (hparam != null && hparam.devar() instanceof VarTy && tparam != null && !(tparam.devar() instanceof VarTy) && hty.devar() instanceof GenericTy && ty.devar() instanceof GenericTy && ((GenericTy) hty.devar()).getBaseType().eq(((GenericTy) ty.devar()).getBaseType()))) {
+				hint = new NameDecl(name, ty);
+				env.getTranspiler().add(name, hint);
+			} else if (!hty.eq(ty)) {
+				env.reportWarning(ns, TFmt.already_defined_YY1_as_YY2, name, hty);
 			}
 		}
 		if (!isFlatName(name)) {
@@ -87,6 +98,14 @@ public interface NameHint {
 			return matchSubNames(env, name.substring(1));
 		}
 		return hint;
+	}
+
+	static boolean removeNameHint(Env env, AST ns) {
+		return removeNameHint(env, keyName(ns.getString()));
+	}
+
+	static boolean removeNameHint(Env env, String name) {
+		return env.getTranspiler().remove(name);
 	}
 
 	public static String safeName(String name) {

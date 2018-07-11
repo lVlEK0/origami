@@ -31,7 +31,7 @@ public class CastCode extends Code1 implements MappedCode {
 	@Override
 	public Code asType(Env env, Ty ret) {
 		if (this.tp == null) {
-			Code in = this.getInner().asType(env, this.getType());
+			Code in = this.getInner().asType(env, Ty.tVar(null)).asType(env, this.getType());
 			// ODebug.trace("casting %s %s %s => %s => %s",
 			// in.getClass().getSimpleName(), in, in.getType(),
 			// this.getType(), ret);

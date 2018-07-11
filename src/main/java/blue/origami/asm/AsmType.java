@@ -66,6 +66,8 @@ public class AsmType extends TypeMapper<Class<?>> implements Opcodes {
 		this.reg("$List", blue.origami.chibi.List$.class);
 		this.reg("ListI", blue.origami.chibi.List$Int.class);
 		this.reg("$ListI", blue.origami.chibi.List$Int.class);
+		this.reg("ListC", blue.origami.chibi.List$Char.class);
+		this.reg("$ListC", blue.origami.chibi.List$Char.class);
 
 		this.reg("Stream", Stream.class);
 		this.reg("StreamI", IntStream.class);

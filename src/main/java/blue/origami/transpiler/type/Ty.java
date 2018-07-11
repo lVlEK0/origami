@@ -14,7 +14,7 @@ import blue.origami.transpiler.TFmt;
 import blue.origami.transpiler.code.Code;
 import blue.origami.transpiler.code.ErrorCode;
 
-// Base = Bool, Int, Float, String
+// Base = Bool, Int, Float, String, Char
 //        a,b,c
 // T[T] : Option[T], List[T], Map[T]
 // T*T  : Tuple
@@ -225,6 +225,7 @@ public abstract class Ty implements TypeApi, OStrings {
 	public static final Ty tInt = m(new IntTy());
 	public static final Ty tFloat = m(new FloatTy());
 	public static final Ty tString = m(new StringTy());
+	public static final Ty tChar = m(new CharTy());
 	//
 	public static final Ty tOption = m(new OptionTy());
 	public static final Ty tList = m(new BaseTy("List", 1));
@@ -251,7 +252,6 @@ public abstract class Ty implements TypeApi, OStrings {
 	public static final Ty tByte = m(new BaseTy("Byte"));
 	public static final Ty tInt64 = m(new BaseTy("Int64"));
 	public static final Ty tFloat32 = m(new BaseTy("Float32"));
-	public static final Ty tChar = m(new BaseTy("Char"));
 
 	// public static final Ty tNULL = m(new SimpleTy("?"));
 	public static final Ty tAuto = m(new BaseTy("auto"));
@@ -488,7 +488,12 @@ class StringTy extends BaseTy {
 	StringTy() {
 		super("String");
 	}
+}
 
+class CharTy extends BaseTy {
+	CharTy() {
+		super("Char");
+	}
 }
 
 class UntypedTy extends BaseTy {

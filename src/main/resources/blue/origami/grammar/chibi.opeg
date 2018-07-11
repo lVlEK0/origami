@@ -41,7 +41,7 @@ BLOCKCOMMENT = '/*' ( !'*/' . )* '*/'
              / '(*' ( !'*)' . )* '*)'
 LINECOMMENT  = '//' ( !EOL . )* EOS
 EOL          = ('\r'? '\n') / EOF
-__           = (EOL)? _
+__           = _ (EOL _)?
 EOS          = (EOL _)+
 EOT          = (!W _)
 
@@ -367,8 +367,8 @@ LetDecl = {
 
 IfStmt = {
 	[Ii] 'f' EOT ( "(" $cond(Expression) ")" / $cond(Expression) )
-	(__ [Tt] 'hen' EOT)? $then(Block)
-  (__ [Ee] 'lse' EOT ($else(IfStmt) / $else(Block)) )?
+	__ ([Tt] 'hen' EOT)? $then(Block)
+  (__ [Ee] 'lse' EOT __ ($else(IfStmt) / $else(Block)) )?
 	#IfExpr
 }
 
@@ -546,7 +546,7 @@ SomeCase = {
 }
 
 NoneCase = {
-	[Nn] ('one' / 'ull' / 'ULL' / 'il' / 'othing' ) EOT
+	(([Nn] ('one' / 'ull' / 'il' / 'othing')) / 'NULL') EOT
 	#NoneCase
 }
 
@@ -939,7 +939,7 @@ EXPONENT =
 
 TrueExpr  = { [Tt] 'rue' (&W !W)?  #TrueExpr } _
 FalseExpr = { [Ff] 'alse' (&W !W)? #FalseExpr } _
-NullExpr  = { [Nn] ('ull' / 'one' / 'il' / 'ULL' / 'othing' )  (&W !W)? #NullExpr } _
+NullExpr  = { (([Nn] ('ull' / 'one' / 'il' / 'othing' )) / 'NULL') (&W !W)? #NullExpr } _
 
 /* Identifier */
 

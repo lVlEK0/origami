@@ -4,6 +4,7 @@ import blue.origami.transpiler.CodeSection;
 import blue.origami.transpiler.Env;
 import blue.origami.transpiler.type.GenericTy;
 import blue.origami.transpiler.type.Ty;
+import blue.origami.transpiler.type.BaseTy;
 import blue.origami.transpiler.type.TypeMatchContext;
 
 public class ListCode extends CodeN {
@@ -43,7 +44,7 @@ public class ListCode extends CodeN {
 					this.args[i] = this.args[i].asType(env, ty);
 				}
 			}
-			this.setType(Ty.tList(ty).toMutable());
+			this.setType(Ty.tList(ty.devar() instanceof BaseTy ? ty : ty.devar().toMutable()).toMutable());
 		}
 		return this.castType(env, ret);
 	}

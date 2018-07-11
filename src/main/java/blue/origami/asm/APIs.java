@@ -1,6 +1,6 @@
 /***********************************************************************
  * Copyright 2017 Kimio Kuramitsu and ORIGAMI project
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -23,6 +23,7 @@ import blue.origami.chibi.Func.FuncObjVoid;
 import blue.origami.chibi.List$;
 import blue.origami.chibi.List$Float;
 import blue.origami.chibi.List$Int;
+import blue.origami.chibi.List$Char;
 import blue.origami.chibi.Range$Int;
 
 public class APIs {
@@ -39,7 +40,7 @@ public class APIs {
 	}
 
 	public final static char unboxC(Object a) {
-		return ((Character) a);
+		return ((Character) a).charValue();
 	}
 
 	public final static Object box(byte a) {
@@ -280,6 +281,40 @@ public class APIs {
 		return sb.toString();
 	}
 
+	/* Char */
+
+	public static final boolean eq(char a, char b) {
+		return a == b;
+	}
+
+	public static final boolean ne(char a, char b) {
+		return a != b;
+	}
+
+	public final static boolean lt(char a, char b) {
+		return a < b;
+	}
+
+	public final static boolean gt(char a, char b) {
+		return a > b;
+	}
+
+	public final static boolean lte(char a, char b) {
+		return a <= b;
+	}
+
+	public final static boolean gte(char a, char b) {
+		return a >= b;
+	}
+
+	public final static int toint(char x) {
+		return x;
+	}
+
+	public final static String toString(char x) {
+		return String.valueOf(x);
+	}
+
 	// Data
 
 	public final static List$ array(Object[] values) {
@@ -288,6 +323,10 @@ public class APIs {
 
 	public final static List$Int array(int[] values) {
 		return new List$Int(values);
+	}
+
+	public final static List$Char array(char[] values) {
+		return new List$Char(values);
 	}
 
 	public final static List$Int range(int start, int end) {
@@ -309,11 +348,11 @@ public class APIs {
 	}
 
 	public final static boolean isSome(Object o) {
-		return !(o instanceof RuntimeException);
+		return !(o instanceof RuntimeException || o == null);
 	}
 
 	public final static boolean isNone(Object o) {
-		return o instanceof RuntimeException;
+		return o instanceof RuntimeException || o == null;
 	}
 
 	public final static Object unwrap(Object o) {

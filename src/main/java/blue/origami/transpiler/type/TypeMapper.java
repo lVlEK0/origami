@@ -116,7 +116,7 @@ public abstract class TypeMapper<C> {
 	protected abstract C genDataType(DataTy dataTy);
 
 	public final Ty fieldTy(String name) {
-		Ty hint = this.env.findNameHint(name);
+		Ty hint = this.env.findNameHint(name).devar();
 		return hint;
 	}
 

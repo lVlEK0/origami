@@ -4,6 +4,7 @@ import org.objectweb.asm.Label;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
 import org.objectweb.asm.commons.GeneratorAdapter;
+import java.util.Arrays;
 
 import blue.origami.chibi.Data$;
 import blue.origami.common.OArrays;
@@ -20,6 +21,7 @@ import blue.origami.transpiler.code.BreakCode;
 import blue.origami.transpiler.code.CastCode;
 import blue.origami.transpiler.code.CastCode.BoxCastCode;
 import blue.origami.transpiler.code.CastCode.UnboxCastCode;
+import blue.origami.transpiler.code.CharCode;
 import blue.origami.transpiler.code.Code;
 import blue.origami.transpiler.code.DataCode;
 import blue.origami.transpiler.code.DictCode;
@@ -85,6 +87,11 @@ public class AsmSection extends AsmBuilder implements CodeSection {
 	@Override
 	public void pushDouble(DoubleCode code) {
 		this.mBuilder.push((double) code.getValue());
+	}
+
+	@Override
+	public void pushChar(CharCode code) {
+		this.mBuilder.push((char) code.getValue());
 	}
 
 	@Override
@@ -197,7 +204,7 @@ public class AsmSection extends AsmBuilder implements CodeSection {
 		case "INVOKESTATIC":
 			// this.mw.visitMethodInsn(INVOKESTATIC, "java/lang/Math", "sqrt",
 			// "(D)D", false);
-			desc = this.ts.desc(cmap.getReturnType(), cmap.getParamTypes());
+			desc = this.ts.desc(cmap.getReturnType(), Arrays.stream(cmap.getParamTypes()).map(c -> c.devar()).toArray(Ty[]::new));
 			// ODebug.trace("INVOKESTATIC %s,%s,%s", def[1], def[2], desc);
 			// ODebug.trace("template %s", tp);
 			this.mBuilder.visitMethodInsn(INVOKESTATIC, def[1], def[2], desc, false);

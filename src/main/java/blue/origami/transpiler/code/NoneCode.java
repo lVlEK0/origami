@@ -8,7 +8,7 @@ import blue.origami.transpiler.type.Ty;
 public class NoneCode extends CommonCode implements ValueCode {
 
 	public NoneCode(AST s) {
-		super(Ty.tOption(Ty.tVar(s)));
+		super(Ty.tOption(Ty.tAnyRef));
 		this.setSource(s);
 	}
 
